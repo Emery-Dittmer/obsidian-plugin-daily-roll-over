@@ -37,7 +37,36 @@ test('passes prompt and content as single -p argument', async () => {
     expect(execFile).toHaveBeenCalledWith(
         'claude',
         ['-p', 'Summarize this\n\nmy notes'],
-        { timeout: 30000 },
+        expect.objectContaining({ timeout: 30000 }),
+        expect.any(Function)
+    );
+});
+
+test('runs .cmd binaries through a shell on Windows', async () => {
+    const originalPlatform = process.platform;
+    Object.defineProperty(process, 'platform', { value: 'win32' });
+    (execFile as jest.Mock).mockImplementationOnce(
+        (_p: string, _a: string[], _o: any, cb: Function) => cb(null, '- ok', '')
+    );
+    await summarize('my notes', 'C:\\npm\\claude.cmd', 'Summarize this');
+    expect(execFile).toHaveBeenCalledWith(
+        'C:\\npm\\claude.cmd',
+        expect.any(Array),
+        expect.objectContaining({ shell: true }),
+        expect.any(Function)
+    );
+    Object.defineProperty(process, 'platform', { value: originalPlatform });
+});
+
+test('does not use a shell for non-.cmd binaries', async () => {
+    (execFile as jest.Mock).mockImplementationOnce(
+        (_p: string, _a: string[], _o: any, cb: Function) => cb(null, '- ok', '')
+    );
+    await summarize('my notes', 'claude', 'Summarize this');
+    expect(execFile).toHaveBeenCalledWith(
+        'claude',
+        expect.any(Array),
+        expect.objectContaining({ shell: false }),
         expect.any(Function)
     );
 });

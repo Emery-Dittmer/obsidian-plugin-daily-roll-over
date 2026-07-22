@@ -123,6 +123,9 @@ function parseDailyNote(content) {
 
 // src/claudeSummarize.ts
 var import_child_process = require("child_process");
+function needsShell(binPath) {
+  return process.platform === "win32" && /\.(cmd|bat)$/i.test(binPath);
+}
 function summarize(freeFormContent, claudePath, prompt) {
   const fullPrompt = `${prompt}
 
@@ -131,9 +134,12 @@ ${freeFormContent}`;
     (0, import_child_process.execFile)(
       claudePath,
       ["-p", fullPrompt],
-      { timeout: 3e4 },
-      (error, stdout) => {
-        if (error || !stdout.trim()) {
+      { timeout: 3e4, shell: needsShell(claudePath) },
+      (error, stdout, stderr) => {
+        if (error) {
+          console.error("Wivoo Daily Rollover: Claude CLI failed", error, stderr);
+          resolve(null);
+        } else if (!stdout.trim()) {
           resolve(null);
         } else {
           resolve(stdout.trim());
