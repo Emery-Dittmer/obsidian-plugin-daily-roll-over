@@ -30,7 +30,7 @@ Run the "Roll over daily note" command (or click the ribbon icon) and the plugin
 ### Build from source
 
 ```bash
-git clone https://github.com/<your-username>/obsidian-plugin-daily-roll-over.git
+git clone https://github.com/Emery-Dittmer/obsidian-plugin-daily-roll-over.git
 cd obsidian-plugin-daily-roll-over
 npm install
 npm run build
