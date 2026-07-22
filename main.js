@@ -172,14 +172,14 @@ function removeRolloverBlock(content) {
   }
   return content.slice(0, markerIdx);
 }
-function assembleRolloverBlock(summary, lines, addDivider) {
+function assembleRolloverBlock(summary, lines, addDivider, colorNew = true) {
   const parts = [];
   parts.push(ROLLOVER_MARKER);
   parts.push(summary != null ? summary : "> \u26A0\uFE0F Claude CLI unavailable \u2014 summary skipped");
   parts.push("");
   if (lines.length > 0) {
     parts.push("## Rolled Over");
-    parts.push(...lines.map((l) => colorTodoRed(stripRedSpans(l))));
+    parts.push(...lines.map((l) => colorNew ? colorTodoRed(stripRedSpans(l)) : stripRedSpans(l)));
     parts.push("");
   }
   if (addDivider) {
@@ -324,6 +324,7 @@ async function performRollover(app, settings) {
     let rolledLines;
     let freeFormLines;
     const extracted = extractFromRolloverBlock(sourceContent);
+    const isReRollover = extracted !== null;
     if (extracted) {
       rolledLines = extracted.rolledLines;
       freeFormLines = extracted.freeFormLines;
@@ -340,7 +341,7 @@ async function performRollover(app, settings) {
       summary = await summarize(nonEmptyFreeForm.join("\n"), settings.claudeBinaryPath, settings.summaryPrompt);
       summaryStatus = summary ? "generated" : "failed";
     }
-    const block = assembleRolloverBlock(summary, rolledLines, settings.addDivider);
+    const block = assembleRolloverBlock(summary, rolledLines, settings.addDivider, !isReRollover);
     const newContent = prependToNote(baseContent, block);
     if (todayFile) {
       await app.vault.modify(todayFile, newContent);

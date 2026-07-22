@@ -154,6 +154,7 @@ export async function performRollover(app: App, settings: WivooRolloverSettings)
     let freeFormLines: string[];
 
     const extracted = extractFromRolloverBlock(sourceContent);
+    const isReRollover = extracted !== null;
     if (extracted) {
         rolledLines = extracted.rolledLines;
         freeFormLines = extracted.freeFormLines;
@@ -175,7 +176,7 @@ export async function performRollover(app: App, settings: WivooRolloverSettings)
     }
 
     // Assemble and write
-    const block = assembleRolloverBlock(summary, rolledLines, settings.addDivider);
+    const block = assembleRolloverBlock(summary, rolledLines, settings.addDivider, !isReRollover);
     const newContent = prependToNote(baseContent, block);
 
     if (todayFile) {

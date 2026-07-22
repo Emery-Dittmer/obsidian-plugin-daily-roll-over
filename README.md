@@ -1,4 +1,4 @@
-# Wivoo Daily Rollover
+# Daily Rollover with AI Summary
 
 An [Obsidian](https://obsidian.md) plugin that rolls over unchecked todos from your most recent daily note into today's note, and generates an AI summary of yesterday's free-form notes using the [Claude Code CLI](https://docs.claude.com/en/docs/claude-code).
 
@@ -7,7 +7,7 @@ An [Obsidian](https://obsidian.md) plugin that rolls over unchecked todos from y
 Run the "Roll over daily note" command (or click the ribbon icon) and the plugin will:
 
 1. Find your most recent daily note before today.
-2. Copy over any unchecked todos (checked todos and their sub-items are skipped), highlighting them in red so it's obvious they're carried over from a previous day.
+2. Copy over any unchecked todos (checked todos and their sub-items are skipped), highlighting newly rolled-over items in red so it's obvious they're carried over for the first time. Items that have already been rolled over on a prior day stay uncolored — the red highlight only marks what's new.
 3. Send the rest of the note's free-form content to the `claude` CLI and prepend an AI-generated summary — action items and key context — to today's note.
 4. Create today's note if it doesn't exist yet, or safely prepend to it if it does (with a confirmation prompt if a rollover has already been run today).
 
@@ -25,7 +25,8 @@ Run the "Roll over daily note" command (or click the ribbon icon) and the plugin
 2. In your Obsidian vault, go to `<your vault>/.obsidian/plugins/` and create a new folder called `wivoo-daily-rollover`.
 3. Copy `main.js` and `manifest.json` into that folder.
 4. In Obsidian, go to **Settings → Community plugins**, and if plugins are restricted, turn on **Community plugins**.
-5. Find **Wivoo Daily Rollover** in the installed plugins list and enable it.
+5. Find **Daily Rollover with AI Summary** in the installed plugins list and enable it.
+6. Go to **Settings → Daily Rollover with AI Summary** and check the **Claude binary path** field. It defaults to `claude`, which works if the `claude` CLI is on your system `PATH`. Otherwise, update it to the full path to the executable, e.g. on Windows: `C:\Users\<you>\AppData\Roaming\npm\claude.cmd` (find yours by running `where claude` in a terminal, or `which claude` on macOS/Linux).
 
 ### Build from source
 
@@ -48,7 +49,7 @@ Runs esbuild in watch mode, rebuilding `main.js` on every change. Symlink or cop
 
 ## Configuration
 
-Open **Settings → Wivoo Daily Rollover** to configure:
+Open **Settings → Daily Rollover with AI Summary** to configure:
 
 - **Claude binary path** — path to the `claude` CLI executable. Defaults to `claude` (resolved via `PATH`).
 - **Summary prompt** — the prompt sent to Claude along with yesterday's free-form note content.

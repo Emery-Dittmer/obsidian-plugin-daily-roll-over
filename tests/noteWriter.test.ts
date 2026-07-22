@@ -24,6 +24,24 @@ describe('assembleRolloverBlock', () => {
         expect(block).not.toContain('## Rolled Over');
     });
 
+    test('does not color todos red when colorNew is false', () => {
+        const block = assembleRolloverBlock(null, ['- [ ] Task A', '\t- [ ] Sub'], false, false);
+        expect(block).toContain('- [ ] Task A');
+        expect(block).toContain('\t- [ ] Sub');
+        expect(block).not.toContain('color: red');
+    });
+
+    test('strips existing red spans when colorNew is false', () => {
+        const block = assembleRolloverBlock(
+            null,
+            ['- [ ] <span style="color: red">Task A</span>'],
+            false,
+            false
+        );
+        expect(block).toContain('- [ ] Task A');
+        expect(block).not.toContain('color: red');
+    });
+
     test('appends divider when addDivider is true', () => {
         const block = assembleRolloverBlock(null, [], true);
         expect(block).toContain('\n---\n');

@@ -37,7 +37,8 @@ export function removeRolloverBlock(content: string): string {
 export function assembleRolloverBlock(
     summary: string | null,
     lines: string[],
-    addDivider: boolean
+    addDivider: boolean,
+    colorNew: boolean = true
 ): string {
     const parts: string[] = [];
 
@@ -47,7 +48,7 @@ export function assembleRolloverBlock(
 
     if (lines.length > 0) {
         parts.push('## Rolled Over');
-        parts.push(...lines.map(l => colorTodoRed(stripRedSpans(l))));
+        parts.push(...lines.map(l => colorNew ? colorTodoRed(stripRedSpans(l)) : stripRedSpans(l)));
         parts.push('');
     }
 
